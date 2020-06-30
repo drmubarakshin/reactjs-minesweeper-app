@@ -48,10 +48,12 @@ class Map extends React.Component {
         console.log(bombsMap)
     }
 
-    onCellClick(x, y) {
+    onCellClick(x, y, switchCellState) {
         const { map } = this.state;
         if (map[x][y]) {
-            
+            // handle end game
+        } else {
+            // handle cell opening 
         }
     }
 

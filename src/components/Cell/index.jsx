@@ -11,13 +11,16 @@ class Cell extends React.Component {
         const { x, y } = this.props;
         this.setState({ x, y });
     }
+    switchState(isOpened) {
+        // handle cell state changing
+    }
     render() {
         const { x, y } = this.state;
         const { onClickHandler } = this.props;
         return (
             <div
                 className='cell'
-                onClick={() => onClickHandler(x, y)}
+                onClick={() => onClickHandler(x, y, this.switchState)}
             />
         );
     }
