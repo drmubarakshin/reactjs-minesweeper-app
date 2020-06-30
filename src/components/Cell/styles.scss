@@ -1,0 +1,15 @@
+.cell {
+    width: 20px;
+    height: 20px;
+    background: #A4B8FF;
+    border: solid 1px #EDF1FF;
+    &:hover {
+        cursor: pointer;
+        background: #033AFF;
+    }
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+}

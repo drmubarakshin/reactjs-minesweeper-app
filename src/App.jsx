@@ -5,11 +5,13 @@ import Map from './components/Map';
 
 function App() {
     return (
-        <Map
-            bombsNum={5}
-            width={10}
-            height={10}
-        />
+        <div className="container">
+            <Map
+                bombsNum={5}
+                width={10}
+                height={10}
+            />
+        </div>
     );
 }
 
