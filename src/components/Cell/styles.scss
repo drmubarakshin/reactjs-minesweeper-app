@@ -1,11 +1,25 @@
 .cell {
-    width: 20px;
-    height: 20px;
+    width: 40px;
+    height: 40px;
     background: #A4B8FF;
     border: solid 1px #EDF1FF;
     &:hover {
         cursor: pointer;
         background: #033AFF;
+    }
+    &:active {
+        background: #426bff;
+    }
+    &.launched {
+        background: #A4B8FF center no-repeat;
+        background-image: url('../../assets/redFlag.png');
+        background-size: 35px 35px;
+    }
+    &.detonated {
+        background: red center no-repeat;
+        background-image: url('../../assets/blackMine.jpg');
+        background-size: 35px 35px;
+        margin: auto;
     }
 }
 

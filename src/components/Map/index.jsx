@@ -4,15 +4,12 @@ import './styles.scss';
 import Cell from '../Cell';
 
 class Map extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            // map: [],
-            width: 10,
-            height: 10,
-        }
+    state = {
+        width: 10,
+        height: 10,
+        isGameOver: false
     }
-        
+
     componentDidMount() {
         this.setState({
             width: this.props.width,
@@ -45,44 +42,39 @@ class Map extends React.Component {
         }
 
         this.setState({ map: bombsMap });
-        console.log(bombsMap)
+        console.log(bombsMap);
     }
 
     onCellClick(x, y, switchCellState) {
         const { map } = this.state;
         if (map[x][y]) {
             // handle end game
+            switchCellState(true);
+            this.setState({ isGameOver: true });
         } else {
-            // handle cell opening 
+            // handle cell opening
         }
     }
 
-    renderRow(row, rindex) {
+    render() {
+        const { map, isGameOver } = this.state;
+        if (isGameOver) {
+            return (
+                <h1 className=''>
+                    GAME OVER
+                </h1>
+            );
+        }
         return (
-            <div className='row' key={rindex}>
-                {row.map((_, eindex) =>
+            <div className='map'>{map && map.map((row, rindex) =>
+                <div className='row' key={rindex}>{row.map((_, eindex) =>
                     <Cell
                         key={`r${rindex}e${eindex}`}
                         x={rindex}
                         y={eindex}
                         onClickHandler={this.onCellClick.bind(this)}
-                    />
-                )}
-            </div>
-        );
-    }
-
-    renderMap() {
-        const { map } = this.state;
-        return (
-            map && map.map((row, rindex) => this.renderRow(row, rindex))
-        );
-    }
-
-    render() {
-        return (
-            <div className='map'>
-                {this.renderMap()}
+                    />)}
+                </div>)}
             </div>
         );
     }
