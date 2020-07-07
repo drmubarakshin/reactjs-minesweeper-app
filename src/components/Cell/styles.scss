@@ -10,6 +10,12 @@
     &:active {
         background: #426bff;
     }
+    &.opened {
+        background: #EDF1FF	 center no-repeat;
+        text-align: center;
+        text-justify: auto;
+        font-size: 30px;
+    }
     &.launched {
         background: #A4B8FF center no-repeat;
         background-image: url('../../assets/redFlag.png');

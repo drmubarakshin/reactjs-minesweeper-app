@@ -1,83 +1,60 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
 import './styles.scss';
 import Cell from '../Cell';
 
+import * as actions from '../../store/actions';
+
 class Map extends React.Component {
-    state = {
-        width: 10,
-        height: 10,
-        isGameOver: false
-    }
-
-    componentDidMount() {
-        this.setState({
-            width: this.props.width,
-            height: this.props.height
-        });
-        this.createMap();
-    }
-
-    createMap() {
-        const bombsMap = [];
+    async componentDidMount() {
         const { bombsNum, width, height } = this.props;
-        // fillin map with zeros
-        for (let i = 0; i < width; i++) {
-            let row = [];
-            for (let j = 0; j < height; j++)
-                row.push(0);
-            bombsMap.push(row);
-        }
-        // create bombs
-        const bombs = [];
-        for (let i = 0; i < bombsNum; i++) {
-            let x = Math.floor(Math.random() * Math.floor(width));
-            let y = Math.floor(Math.random() * Math.floor(height));
-            let point = { x, y };
-            bombs.push(point);
-        }
-        // add bombs to map
-        for (let i = 0; i < bombs.length; i++) {
-            bombsMap[bombs[i].x][bombs[i].y] = 1;
-        }
-
-        this.setState({ map: bombsMap });
-        console.log(bombsMap);
+        await this.props.initMap({ bombsNum, width, height });
     }
 
     onCellClick(x, y, switchCellState) {
-        const { map } = this.state;
-        if (map[x][y]) {
+        const { map, setGameState } = this.props;
+        if (map[x][y] === 'F') {
             // handle end game
             switchCellState(true);
-            this.setState({ isGameOver: true });
+            setGameState(false);
         } else {
             // handle cell opening
+            if (map[x][y] === 0) {
+
+            }
+            switchCellState(false);
         }
     }
 
     render() {
-        const { map, isGameOver } = this.state;
-        if (isGameOver) {
-            return (
-                <h1 className=''>
-                    GAME OVER
-                </h1>
-            );
-        }
+        const { map, gameState } = this.props;
         return (
-            <div className='map'>{map && map.map((row, rindex) =>
-                <div className='row' key={rindex}>{row.map((_, eindex) =>
-                    <Cell
-                        key={`r${rindex}e${eindex}`}
-                        x={rindex}
-                        y={eindex}
-                        onClickHandler={this.onCellClick.bind(this)}
-                    />)}
-                </div>)}
-            </div>
+            <React.Fragment>
+                {!gameState && <h1 className='gameover'>GAME OVER</h1>}
+                <div className='map'>{map && map.map((row, rindex) =>
+                    <div className='row' key={rindex}>{row.map((_, eindex) =>
+                        <Cell
+                            key={`r${rindex}e${eindex}`}
+                            x={rindex}
+                            y={eindex}
+                            onClickHandler={this.onCellClick.bind(this)}
+                        />)}
+                    </div>)}
+                </div>
+            </React.Fragment>
         );
     }
 }
 
-export default Map;
+const mapStateToProps = state => ({
+    map: state.map,
+    gameState: state.gameState
+});
+
+const mapDispatchToProps = dispatch => ({
+    initMap: (...props) => dispatch(actions.initMap(...props)),
+    setGameState: (state) => dispatch(actions.setGameState(state)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Map);

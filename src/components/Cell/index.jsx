@@ -1,4 +1,7 @@
 import React from 'react';
+import { connect } from 'react-redux';
+
+import * as actions from '../../store/actions';
 
 import './styles.scss';
 import mine from '../../assets/blackMine.jpg';
@@ -9,10 +12,11 @@ class Cell extends React.Component {
         this.state = {
             x: undefined,
             y: undefined,
+
             isDetonated: false,
             isFlagLaunched: false,
+            value: undefined
         };
-        // this.setState.bind(this);
         this.switchState = this.switchState.bind(this);
     }
 
@@ -21,10 +25,16 @@ class Cell extends React.Component {
         this.setState({ x, y });
     }
 
-    switchState(isDetonated, number = 0) {
+    switchState(isDetonated, value = 0) {
         // handle cell state changing
         if (isDetonated)
             this.setState({ isDetonated: true });
+        else {
+            // this.setState({ value });
+            const { x, y } = this.state;
+            const { map, openedMap, openAvailableCells } = this.props;
+            openAvailableCells({ x, y, map, openedMap });
+        }
     }
 
     onRightButtonClick = (event) => {
@@ -34,8 +44,20 @@ class Cell extends React.Component {
     }
 
     render() {
-        const { x, y, isDetonated, isFlagLaunched } = this.state;
-        const { onClickHandler } = this.props;
+        const { x, y, value, isDetonated, isFlagLaunched } = this.state;
+        const { map, openedMap, onClickHandler } = this.props;
+
+        //
+
+        if (map && openedMap) {
+            console.log(map[x][y])
+        }
+
+        if (value || value === 0) {
+            return (
+                <div className='cell opened'>{value ? value : ''}</div>
+            );
+        }
         return isDetonated ? (
             <div className='cell'>
                 <img
@@ -51,13 +73,22 @@ class Cell extends React.Component {
                 onContextMenu={this.onRightButtonClick}
             />
         ) : (
-            <div
-                className='cell'
-                onClick={() => onClickHandler(x, y, this.switchState)}
-                onContextMenu={this.onRightButtonClick}
-            />
-        );
+                    <div
+                        className='cell'
+                        onClick={() => onClickHandler(x, y, this.switchState)}
+                        onContextMenu={this.onRightButtonClick}
+                    />
+                );
     }
 }
 
-export default Cell;
+const mapStateToProps = state => ({
+    map: state.map,
+    openedMap: state.openedMap
+});
+
+const mapDispatchToProps = dispatch => ({
+    openAvailableCells: (...props) => dispatch(actions.openAvailableCells(...props)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Cell);
